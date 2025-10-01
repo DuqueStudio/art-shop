@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tienda de Arte — Miguel Roberto Duque</title>
+  <meta name="description" content="Venta de obras originales de Miguel Roberto Duque." />
+  <!-- Recomendaciones de protección (lado cliente) -->
+  <meta name="robots" content="index,follow,noimageindex" />
+  <meta name="referrer" content="same-origin" />
+  <!-- Estricta política de seguridad básica (ajústala a tu dominio/recursos) -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; base-uri 'self'; form-action 'self'" />
+  <link rel="preload" as="image" href="images/hero.webp" />
+  <style>
+    :root{
+      --bg:#0f1115; --card:#151922; --ink:#e6e9ef; --muted:#9aa3b2; --brand:#7c5cff;
+      --accent:#39d353; --wm-text:'© Miguel Roberto Duque — Todos los derechos reservados';
+      --wm-opacity:0.22; --wm-size:16px; --wm-rotate:-30deg;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue',Arial,'Noto Sans','Apple Color Emoji','Segoe UI Emoji'}
+    a{color:inherit}
+    .container{max-width:1200px;margin:0 auto;padding:24px}
+    header{position:sticky;top:0;backdrop-filter:saturate(1.3) blur(8px);background:linear-gradient(180deg,rgba(15,17,21,.85),rgba(15,17,21,.6));border-bottom:1px solid #222;z-index:10}
+    header .row{display:flex;align-items:center;gap:16px;justify-content:space-between}
+    .brand{display:flex;align-items:center;gap:12px;font-weight:700}
+    .brand .logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--brand),#00d1b2);display:grid;place-items:center;font-weight:800}
+    nav a{padding:10px 12px;border-radius:10px;color:var(--muted);text-decoration:none}
+    nav a:hover{background:#1b2230;color:var(--ink)}
+    .hero{display:grid;grid-template-columns:1.1fr .9fr;gap:32px;align-items:center;padding:40px 24px 10px}
+    .hero h1{font-size:clamp(28px,4.5vw,48px);line-height:1.1;margin:0 0 12px}
+    .hero p{color:var(--muted);margin:0 0 16px}
+    .cta{display:flex;gap:12px;flex-wrap:wrap}
+    .btn{padding:12px 16px;border-radius:12px;border:1px solid #2a3140;background:#1b2230;color:#fff;text-decoration:none}
+    .btn.brand{background:linear-gradient(135deg,var(--brand),#00d1b2);border:none}
+    .card{background:var(--card);border:1px solid #222;border-radius:18px;overflow:hidden}
+    .grid{display:grid;gap:16px;grid-template-columns:repeat(12,1fr)}
+    .col-12{grid-column:span 12}
+    .col-6{grid-column:span 6}
+    .col-4{grid-column:span 4}
+    @media (max-width:960px){.hero{grid-template-columns:1fr}.col-6{grid-column:span 12}.col-4{grid-column:span 6}}
+    @media (max-width:640px){.col-4{grid-column:span 12}}
+
+    /* Imagen + marca de agua */
+    .art{position:relative;overflow:hidden}
+    .art img{width:100%;height:auto;display:block;filter:blur(8px);transform:scale(1.03);transition:filter .6s ease, transform .6s ease}
+    .art.loaded img{filter:blur(0);transform:scale(1)}
+    .art .wm{position:absolute;inset:0;pointer-events:none;opacity:var(--wm-opacity);mix-blend-mode:multiply;}
+    /* Fondo SVG repetido con texto como marca de agua */
+    .wm{--watermark: var(--wm-text);background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='200' viewBox='0 0 400 200'>\
+      <defs>\
+        <pattern id='wm' width='400' height='200' patternUnits='userSpaceOnUse' patternTransform='rotate(-30)'>\
+          <text x='0' y='50' font-family='Arial, Helvetica, sans-serif' font-size='16' fill='white' fill-opacity='.9'>© Miguel Roberto Duque — Todos los derechos reservados</text>\
+        </pattern>\
+      </defs>\
+      <rect width='100%' height='100%' fill='url(%23wm)'/>\
+    </svg>");background-size:400px 200px}
+
+    .art-info{padding:14px 14px 16px;display:flex;justify-content:space-between;gap:10px;align-items:center}
+    .art-meta{display:grid;gap:4px}
+    .art-title{font-weight:600}
+    .art-sub{color:var(--muted);font-size:14px}
+    .price{font-weight:700}
+
+    /* Modal */
+    dialog{background:#111826;border:1px solid #233041;border-radius:16px;color:var(--ink);max-width:720px;width:92%;padding:0;}
+    dialog::backdrop{background:rgba(0,0,0,.6)}
+    .modal-head{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #233041;padding:14px 16px}
+    .modal-body{padding:16px}
+
+    footer{padding:30px 24px;color:var(--muted);text-align:center}
+    .tiny{font-size:13px;color:var(--muted)}
+
+    /* Bloqueo básico de selección/arrastre (disuasión, no protección total) */
+    .no-drag{user-select:none;-webkit-user-drag:none}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container row">
+      <div class="brand">
+        <div class="logo">M</div>
+        <div>
+          <div style="font-weight:800">Miguel Roberto Duque</div>
+          <div class="tiny">Obras originales</div>
+        </div>
+      </div>
+      <nav>
+        <a href="#galeria">Galería</a>
+        <a href="#sobre-mi">Sobre mí</a>
+        <a href="#contacto">Contacto</a>
+        <a href="#" id="open-terms">Términos</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero container">
+    <div>
+      <h1>Arte original, directo del estudio</h1>
+      <p>Bienvenida/o a mi colección. Cada pieza es única y está protegida por derechos de autor. Las imágenes aquí mostradas incluyen medidas de protección para evitar su uso no autorizado.</p>
+      <div class="cta">
+        <a class="btn brand" href="#galeria">Ver galería</a>
+        <a class="btn" href="#contacto">Solicitar una obra a medida</a>
+      </div>
+    </div>
+    <div class="card art no-drag" aria-label="Imagen de portada" oncontextmenu="return false">
+      <picture>
+        <source srcset="images/hero.avif" type="image/avif" />
+        <source srcset="images/hero.webp" type="image/webp" />
+        <img src="images/hero.jpg" alt="Obra destacada" loading="eager" draggable="false" />
+      </picture>
+      <div class="wm" aria-hidden="true"></div>
+    </div>
+  </section>
+
+  <section id="galeria" class="container" aria-label="Galería">
+    <h2 style="margin:18px 0">Galería</h2>
+    <div class="grid">
+      <!-- Ejemplo de tarjeta de obra -->
+      <article class="card col-4 no-drag" oncontextmenu="return false">
+        <div class="art" data-sku="OBRA-001">
+          <picture>
+            <source srcset="images/obra1_800.avif 800w, images/obra1_1200.avif 1200w" type="image/avif" />
+            <source srcset="images/obra1_800.webp 800w, images/obra1_1200.webp 1200w" type="image/webp" />
+            <img src="images/obra1_800.jpg" alt="Título de la obra 1" loading="lazy" width="1200" height="900" draggable="false" />
+          </picture>
+          <div class="wm" aria-hidden="true"></div>
+        </div>
+        <div class="art-info">
+          <div class="art-meta">
+            <div class="art-title">Título de la obra 1</div>
+            <div class="art-sub">Acrílico sobre lienzo · 60×80 cm · 2025</div>
+          </div>
+          <div class="art-cta">
+            <div class="price">€ 850</div>
+            <button class="btn" data-open="OBRA-001">Comprar / Consultar</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="card col-4 no-drag" oncontextmenu="return false">
+        <div class="art" data-sku="OBRA-002">
+          <picture>
+            <source srcset="images/obra2_800.avif 800w, images/obra2_1200.avif 1200w" type="image/avif" />
+            <source srcset="images/obra2_800.webp 800w, images/obra2_1200.webp 1200w" type="image/webp" />
+            <img src="images/obra2_800.jpg" alt="Título de la obra 2" loading="lazy" width="1200" height="900" draggable="false" />
+          </picture>
+          <div class="wm" aria-hidden="true"></div>
+        </div>
+        <div class="art-info">
+          <div class="art-meta">
+            <div class="art-title">Título de la obra 2</div>
+            <div class="art-sub">Mixta sobre papel · 40×50 cm · 2025</div>
+          </div>
+          <div class="art-cta">
+            <div class="price">€ 420</div>
+            <button class="btn" data-open="OBRA-002">Comprar / Consultar</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="card col-4 no-drag" oncontextmenu="return false">
+        <div class="art" data-sku="OBRA-003">
+          <picture>
+            <source srcset="images/obra3_800.avif 800w, images/obra3_1200.avif 1200w" type="image/avif" />
+            <source srcset="images/obra3_800.webp 800w, images/obra3_1200.webp 1200w" type="image/webp" />
+            <img src="images/obra3_800.jpg" alt="Título de la obra 3" loading="lazy" width="1200" height="900" draggable="false" />
+          </picture>
+          <div class="wm" aria-hidden="true"></div>
+        </div>
+        <div class="art-info">
+          <div class="art-meta">
+            <div class="art-title">Título de la obra 3</div>
+            <div class="art-sub">Óleo sobre lienzo · 50×50 cm · 2024</div>
+          </div>
+          <div class="art-cta">
+            <div class="price">€ 690</div>
+            <button class="btn" data-open="OBRA-003">Comprar / Consultar</button>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section id="sobre-mi" class="container">
+    <h2 style="margin:18px 0">Sobre mí</h2>
+    <div class="card" style="padding:18px">
+      <p>Soy Miguel Roberto Duque, artista colombiano. Me apasiona el paisajismo y el arte abstracto, y también realizo obras personalizadas adaptadas a los gustos y necesidades de cada cliente. Todas las imágenes de esta web muestran marcas de agua y medidas técnicas para desalentar su uso sin permiso. Las obras físicas se entregan con certificado de autenticidad firmado.</p>
+    </div>
+  </section>
+
+  <section id="contacto" class="container">
+    <h2 style="margin:18px 0">Contacto</h2>
+    <div class="card" style="padding:18px">
+      <form id="contact-form" method="post" action="#" autocomplete="on">
+        <div class="grid">
+          <div class="col-6" style="padding:6px">
+            <label>Nombre<br><input required name="name" class="card" style="width:100%;padding:12px;border-radius:12px;border:1px solid #2a3140;background:#101522;color:#fff"/></label>
+          </div>
+          <div class="col-6" style="padding:6px">
+            <label>Email<br><input required type="email" name="email" class="card" style="width:100%;padding:12px;border-radius:12px;border:1px solid #2a3140;background:#101522;color:#fff"/></label>
+          </div>
+          <div class="col-12" style="padding:6px">
+            <label>Mensaje<br><textarea required name="message" rows="4" class="card" style="width:100%;padding:12px;border-radius:12px;border:1px solid #2a3140;background:#101522;color:#fff"></textarea></label>
+          </div>
+        </div>
+        <button class="btn brand" type="submit">Enviar</button>
+        <p class="tiny" style="margin-top:8px">Al enviar aceptas los <a href="#" id="open-terms-2">Términos de uso</a>.</p>
+      </form>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <div>© <span id="year"></span> Miguel Roberto Duque. Todos los derechos reservados.</div>
+      <div class="tiny">No se permite descargar, reproducir ni utilizar las imágenes sin autorización escrita.</div>
+    </div>
+  </footer>
+
+</body>
+</html>
